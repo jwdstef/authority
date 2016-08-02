@@ -7,7 +7,9 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.inject.Inject;
@@ -33,9 +35,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.mysql.jdbc.Connection;
+import com.prisys.entity.BbtUserMap;
 import com.prisys.entity.ResFormMap;
 import com.prisys.entity.UserFormMap;
 import com.prisys.entity.UserLoginFormMap;
+import com.prisys.mapper.BbtUserMapper;
 import com.prisys.mapper.ResourcesMapper;
 import com.prisys.mapper.UserLoginMapper;
 import com.prisys.mapper.UserMapper;
@@ -64,6 +68,9 @@ public class BackgroundController extends BaseController {
 
 	@Inject
 	private UserMapper userMapper;
+	
+	@Inject
+	private BbtUserMapper bbtUserMapper;
 
 	/**
 	 * @return
@@ -72,6 +79,22 @@ public class BackgroundController extends BaseController {
 	public String login(HttpServletRequest request) {
 		request.removeAttribute("error");
 		return "/login";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "doit", method = RequestMethod.GET, produces = "text/html; charset=utf-8")
+	public Map doit(HttpServletRequest request) {
+		Map map = new HashMap();
+		try {
+			BbtUserMap bbtUserMap = new BbtUserMap();
+			bbtUserMap.set("user_username", "admin");
+			List<BbtUserMap> tu = bbtUserMapper.findByNames(bbtUserMap);
+			map.put("tu",tu);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return map;
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.POST, produces = "text/html; charset=utf-8")

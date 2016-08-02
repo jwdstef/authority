@@ -58,7 +58,7 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<!-- 自动匹配Mapper映射文件 -->
-		<property name="mapperLocations" value="classpath:mappings/*-mapper.xml"/>
+		<property name="mapperLocations" value="classpath:mappings/*.xml"/>
 		<property name="typeAliasesPackage" value="com.prisys.entity"/>
 		<property name="plugins">
 			<array>
@@ -75,33 +75,36 @@
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	<!-- <aop:config>
+	<aop:config>
 		<aop:pointcut
-			expression="execution(public * com.prisys.controller.*(..))"
+			expression="execution(public * com.prisys.service..*Impl.*(..))"
 			id="pointcut" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut" />
 	</aop:config>
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
-			<tx:method name="query*" propagation="REQUIRED" read-only="true" />
-			<tx:method name="find*" propagation="REQUIRED" read-only="true" />
-			<tx:method name="save*" propagation="REQUIRED" />
-			<tx:method name="delete*" propagation="REQUIRED" />
 			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="append*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
 			<tx:method name="modify*" propagation="REQUIRED" />
-			<tx:method name="logicDelById" propagation="REQUIRED" />
+			<tx:method name="edit*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="repair" propagation="REQUIRED" />
+			<tx:method name="delAndRepair" propagation="REQUIRED" />
+
+			<tx:method name="get*" propagation="SUPPORTS" />
+			<tx:method name="find*" propagation="SUPPORTS" />
+			<tx:method name="load*" propagation="SUPPORTS" />
+			<tx:method name="search*" propagation="SUPPORTS" />
+			<tx:method name="datagrid*" propagation="SUPPORTS" />
+
+			<tx:method name="*" propagation="SUPPORTS" />
 		</tx:attributes>
-	</tx:advice> -->
-	<!-- <aop:aspectj-autoproxy proxy-target-class="true"/> 
-	 <bean id="log4jHandlerAOP" class="com.prisys.logAop.LogAopAction"></bean> 
-		<aop:config proxy-target-class="true">
-		    <aop:aspect id="logAspect" ref="log4jHandlerAOP"> 
-		    <aop:pointcut id="logPointCut" expression="execution(* org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(..))" /> 
-		    <aop:around method="logAll" pointcut-ref="logPointCut" /> </aop:aspect> 
-		</aop:config> -->
-	<!-- 使用Spring组件扫描的方式来实现自动注入bean 
-	<context:component-scan base-package="com.prisys.task" />-->
-	<!-- 隐式地向 Spring 容器注册 -->
+	</tx:advice>
+	
 	<context:annotation-config />
 	
 	<!-- 
